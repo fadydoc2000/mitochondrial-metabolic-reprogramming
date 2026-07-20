@@ -24,6 +24,20 @@ backend/    Express.js API (port 5000)
 docs/       Implementation plan, design spec, clinical research notes
 ```
 
+## Database
+
+Prisma ORM — schema at [`backend/prisma/schema.prisma`](backend/prisma/schema.prisma). PostgreSQL 15 via Docker.
+
+```bash
+cd backend
+npm run db:generate      # regenerate Prisma client after schema changes
+npm run db:migrate:dev   # create + apply a new migration (dev)
+npm run db:migrate       # apply pending migrations (prod/CI)
+npm run db:studio        # open Prisma Studio GUI
+```
+
+Prisma client singleton: `backend/src/db.ts` — import `prisma` from there everywhere.
+
 ## Commands
 
 ```bash

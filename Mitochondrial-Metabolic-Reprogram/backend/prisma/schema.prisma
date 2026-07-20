@@ -1,0 +1,163 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  PROVIDER
+  ADMIN
+}
+
+enum MetabolicZone {
+  RED    // GKI > 3.0 — glucose-dependent
+  YELLOW // GKI 1.0–3.0 — transitioning
+  GREEN  // GKI < 1.0 — therapeutic ketosis
+}
+
+enum MetabolicState {
+  GLUCOSE_DEPENDENT
+  TRANSITIONING
+  KETONE_ADAPTED
+}
+
+model User {
+  id            Int       @id @default(autoincrement())
+  email         String    @unique
+  passwordHash  String
+  firstName     String
+  lastName      String
+  role          Role      @default(USER)
+  isActive      Boolean   @default(true)
+  emailVerified Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  profile         Profile?
+  biomarkers      BiomarkerReading[]
+  assessments     Assessment[]
+  providerPatients ProviderPatient[] @relation("provider")
+  providerOf       ProviderPatient[] @relation("patient")
+
+  @@map("users")
+}
+
+model Profile {
+  id                  Int      @id @default(autoincrement())
+  userId              Int      @unique
+  dateOfBirth         DateTime?
+  gender              String?
+  heightCm            Float?
+  weightKg            Float?
+  healthGoals         String?
+  // stored as JSON string — comma-separated or JSON array
+  medicalConditions   String?
+  allergies           String?
+  dietaryRestrictions String?
+  // safety screening
+  hasType1Diabetes    Boolean  @default(false)
+  hasKidneyDisease    Boolean  @default(false)
+  hasLiverDisease     Boolean  @default(false)
+  isPregnant          Boolean  @default(false)
+  currentMedications  String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profiles")
+}
+
+// Tracks a single biomarker reading — primary data for GKI calculation
+model BiomarkerReading {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  readingAt DateTime @default(now())
+
+  // Primary GKI metrics
+  bloodGlucoseMgdl        Float?  // mg/dL — target <80 during therapeutic ketosis
+  betaHydroxybutyrateMmol Float?  // mmol/L — target 2-5
+
+  // Computed
+  gkiScore       Float?         // bloodGlucoseMgdl / (betaHydroxybutyrateMmol * 18)
+  metabolicState MetabolicState?
+  metabolicZone  MetabolicZone?
+
+  // Secondary — inflammatory markers
+  crpMgL  Float?  // C-reactive protein, target <1.0
+  il6PgMl Float?  // Interleukin-6, target <5
+
+  // Lipid panel
+  triglyceridesMgdl Float?
+  hdlMgdl           Float?
+  ldlMgdl           Float?
+
+  // Liver function
+  altUl Float?  // Alanine aminotransferase
+  astUl Float?  // Aspartate aminotransferase
+
+  // Lactate (glutamine pathway marker)
+  lactateMmol Float?
+
+  // Source — manual entry or device sync
+  source    String  @default("manual")  // "manual" | "dexcom" | "freestyle" | "keto-mojo"
+  notes     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readingAt])
+  @@map("biomarker_readings")
+}
+
+// Periodic full assessment — determines zone and generates protocol plan
+model Assessment {
+  id             Int           @id @default(autoincrement())
+  userId         Int
+  assessmentDate DateTime      @default(now())
+  zone           MetabolicZone
+  overallScore   Int           // 0–100
+
+  // Snapshot vitals at assessment time
+  weightKg      Float?
+  systolicBp    Int?
+  diastolicBp   Int?
+  energyLevel   Int?  // 1–10
+  mentalClarity Int?  // 1–10
+  symptomScore  Int?  // 0–100
+
+  // Protocol compliance tracking
+  dietAdherencePercent  Int?  // 0–100
+  protocolPhase         String?  // "press" | "pulse"
+  daysOnProtocol        Int?
+
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, assessmentDate])
+  @@map("assessments")
+}
+
+// Links providers to patients (for collaboration feature — Task 12)
+model ProviderPatient {
+  id         Int      @id @default(autoincrement())
+  providerId Int
+  patientId  Int
+  consentAt  DateTime @default(now())
+  isActive   Boolean  @default(true)
+
+  provider User @relation("provider", fields: [providerId], references: [id])
+  patient  User @relation("patient", fields: [patientId], references: [id])
+
+  @@unique([providerId, patientId])
+  @@map("provider_patients")
+}

@@ -21,6 +21,7 @@ services:
       - DATABASE_URL=postgresql://mmr_user:mmr_pass@db:5432/mmr
       - REDIS_URL=redis://redis:6379
       - JWT_SECRET=${JWT_SECRET}
+    command: sh -c "npm run db:migrate && node server.js"
     depends_on:
       db:
         condition: service_healthy
