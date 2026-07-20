@@ -63,11 +63,31 @@ cd frontend && npm run build
 
 ## Architecture
 
-**Backend** (`backend/server.js`): Express with `helmet`, `cors`, and `express-rate-limit` already wired. Entry point exports `app` so `supertest` can import without binding a port. No database yet — the plan specifies PostgreSQL + Redis but neither is implemented.
+**Backend** (`backend/server.js`): Express with `helmet`, `cors`, and `express-rate-limit` wired. Entry point exports `app` so `supertest` can import without binding a port. Routes are TypeScript (transpiled at runtime via `ts-node` in dev; compile to `dist/` for production). PostgreSQL 15 via Docker + Prisma ORM. Redis 7 via Docker (not yet wired to routes).
 
-**Frontend** (`frontend/src/`): Create React App shell. Currently a placeholder. The plan targets React 18 + TypeScript + Vite + Redux Toolkit + MUI + Recharts — CRA will be replaced when UI work begins.
+**Frontend** (`frontend/src/`): React 18 + TypeScript + Vite. API calls via Axios (`frontend/src/services/api.ts`). Key pages: `BiomarkerDashboard`, `ProtocolGuidance`. Key components: `GKITracker`, `DeviceConnector`, `ProtocolPhase`, `MetricCard`.
 
-**Implementation phases** (see plan Tasks 1-13): The plan is task-numbered. Current code matches roughly Task 1-2 (repo scaffold + basic server). Tasks 7-13 define the clinical features: GKI calculator, biomarker dashboard, Press-Pulse Protocol guidance, medical device integration (CGM/ketone meters), safety screening, adherence coaching, and provider collaboration.
+**Implementation phases** (see plan Tasks 1-13): Phases 1–2 (Tasks 1–9) complete. Tasks 10–13: safety screening, adherence coaching, provider collaboration, clinical reporting.
+
+## Code Review Workflow
+
+**Mandatory gate: run `/code-review` before every `git push`.**
+
+Sequence for each phase or significant feature:
+
+```
+1. Write code
+2. npm test               # all workspaces — must pass
+3. git commit
+4. /code-review           # Claude Code slash command — medium effort by default
+                          # fix all CONFIRMED findings before proceeding
+                          # PLAUSIBLE findings: fix or explicitly defer with a comment
+5. git push
+```
+
+If working across multiple commits before a push, run `/code-review` on the full set of unpushed commits before the push (the command diffs against upstream automatically).
+
+For phase-ending PRs, use `/code-review ultra` for deeper multi-agent review.
 
 ## Key Clinical Concepts (affects data model design)
 
