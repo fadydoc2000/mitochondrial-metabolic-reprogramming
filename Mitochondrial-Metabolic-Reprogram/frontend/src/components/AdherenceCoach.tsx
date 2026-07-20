@@ -7,10 +7,12 @@ export default function AdherenceCoach() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    let active = true
     getAdherence()
-      .then(setStatus)
-      .catch(() => setStatus(null))
-      .finally(() => setLoading(false))
+      .then(s => { if (active) setStatus(s) })
+      .catch(() => { if (active) setStatus(null) })
+      .finally(() => { if (active) setLoading(false) })
+    return () => { active = false }
   }, [])
 
   if (loading) return <div style={{ padding: 20, color: '#888' }}>Loading adherence data…</div>

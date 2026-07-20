@@ -21,7 +21,7 @@ export default function App() {
       .then(profile => {
         setState(profile?.safetyScreeningCompletedAt ? 'app' : 'safety')
       })
-      .catch(() => setState('safety'))
+      .catch(() => { logout(); setState('landing') })
   }, [state])
 
   const handleAuth = () => setState('loading')

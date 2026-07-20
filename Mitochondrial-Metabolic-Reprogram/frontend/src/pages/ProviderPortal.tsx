@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { getMyPatients, getPatientReport } from '../services/api'
 import type { PatientLink, PatientReport } from '../services/api'
 
@@ -7,15 +7,21 @@ export default function ProviderPortal() {
   const [selected, setSelected] = useState<number | null>(null)
   const [report, setReport] = useState<PatientReport | null>(null)
   const [loadingReport, setLoadingReport] = useState(false)
+  const [reportError, setReportError] = useState<string | null>(null)
+  const selectedRef = useRef<number | null>(null)
 
   useEffect(() => {
     getMyPatients().then(setPatients).catch(() => {})
   }, [])
 
   const viewReport = async (patientId: number) => {
-    setSelected(patientId); setLoadingReport(true); setReport(null)
+    selectedRef.current = patientId
+    setSelected(patientId); setLoadingReport(true); setReport(null); setReportError(null)
     try {
-      setReport(await getPatientReport(patientId))
+      const data = await getPatientReport(patientId)
+      if (selectedRef.current === patientId) setReport(data)
+    } catch {
+      if (selectedRef.current === patientId) setReportError('Failed to load report.')
     } finally {
       setLoadingReport(false)
     }
@@ -53,6 +59,7 @@ export default function ProviderPortal() {
         <div style={{ flex: 1, minWidth: 0 }}>
           {!selected && <div style={{ color: '#aaa', padding: 40, textAlign: 'center' }}>Select a patient to view their report</div>}
           {loadingReport && <div style={{ color: '#888', padding: 40, textAlign: 'center' }}>Generating report…</div>}
+          {reportError && <div style={{ color: '#c62828', padding: 40, textAlign: 'center' }}>{reportError}</div>}
 
           {report && !loadingReport && (
             <div>

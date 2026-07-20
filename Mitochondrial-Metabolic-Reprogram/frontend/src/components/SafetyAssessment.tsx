@@ -10,13 +10,39 @@ const DISCLAIMER = `This tool is for educational purposes only and does not cons
 Always consult a qualified healthcare provider before starting any dietary protocol,
 particularly if you have a pre-existing medical condition.`
 
+type BoolField = 'hasType1Diabetes' | 'hasKidneyDisease' | 'hasLiverDisease' | 'isPregnant'
+type FormState = Record<BoolField, boolean> & { currentMedications: string }
+
+function Checkbox({ field, label, description, form, toggle }: {
+  field: BoolField
+  label: string
+  description?: string
+  form: FormState
+  toggle: (f: BoolField) => void
+}) {
+  return (
+    <label style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: '12px 0', borderBottom: '1px solid #f0f0f0', cursor: 'pointer' }}>
+      <input
+        type="checkbox"
+        checked={form[field]}
+        onChange={() => toggle(field)}
+        style={{ marginTop: 2, width: 18, height: 18, flexShrink: 0 }}
+      />
+      <div>
+        <div style={{ fontWeight: 600, fontSize: 14 }}>{label}</div>
+        {description && <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{description}</div>}
+      </div>
+    </label>
+  )
+}
+
 export default function SafetyAssessment({ onComplete }: Props) {
   const [step, setStep] = useState<'questions' | 'results'>('questions')
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<SafetyResult | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<FormState>({
     hasType1Diabetes: false,
     hasKidneyDisease: false,
     hasLiverDisease: false,
@@ -24,7 +50,7 @@ export default function SafetyAssessment({ onComplete }: Props) {
     currentMedications: '',
   })
 
-  const toggle = (field: keyof typeof form) =>
+  const toggle = (field: BoolField) =>
     setForm(f => ({ ...f, [field]: !f[field] }))
 
   const submit = async (e: React.FormEvent) => {
@@ -54,11 +80,12 @@ export default function SafetyAssessment({ onComplete }: Props) {
   )
 
   if (step === 'results' && result) {
+    const blocked = result.blockers.length > 0
     return wrap(
       <>
         <h2 style={{ color: '#1565c0', marginTop: 0 }}>Safety Screening Results</h2>
 
-        {result.blockers.length > 0 && (
+        {blocked && (
           <div style={{ background: '#ffebee', border: '1px solid #ef9a9a', borderRadius: 8, padding: 16, marginBottom: 16 }}>
             <strong style={{ color: '#c62828', display: 'block', marginBottom: 8 }}>⚠ Protocol Not Recommended</strong>
             {result.blockers.map((b, i) => (
@@ -89,28 +116,13 @@ export default function SafetyAssessment({ onComplete }: Props) {
           <p style={{ margin: 0, fontSize: 12, color: '#666' }}>{DISCLAIMER}</p>
         </div>
 
-        <button onClick={onComplete}
-          style={{ width: '100%', padding: '12px 0', borderRadius: 6, background: '#1565c0', color: '#fff', border: 'none', fontWeight: 600, fontSize: 15, cursor: 'pointer' }}>
-          Continue to Dashboard
+        <button onClick={onComplete} disabled={blocked}
+          style={{ width: '100%', padding: '12px 0', borderRadius: 6, background: blocked ? '#9e9e9e' : '#1565c0', color: '#fff', border: 'none', fontWeight: 600, fontSize: 15, cursor: blocked ? 'not-allowed' : 'pointer' }}>
+          {blocked ? 'Protocol not suitable — consult your provider' : 'Continue to Dashboard'}
         </button>
       </>
     )
   }
-
-  const Checkbox = ({ field, label, description }: { field: keyof typeof form; label: string; description?: string }) => (
-    <label style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: '12px 0', borderBottom: '1px solid #f0f0f0', cursor: 'pointer' }}>
-      <input
-        type="checkbox"
-        checked={!!form[field]}
-        onChange={() => toggle(field)}
-        style={{ marginTop: 2, width: 18, height: 18, flexShrink: 0 }}
-      />
-      <div>
-        <div style={{ fontWeight: 600, fontSize: 14 }}>{label}</div>
-        {description && <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{description}</div>}
-      </div>
-    </label>
-  )
 
   return wrap(
     <>
@@ -124,10 +136,10 @@ export default function SafetyAssessment({ onComplete }: Props) {
       </div>
 
       <form onSubmit={submit}>
-        <Checkbox field="hasType1Diabetes" label="I have Type 1 Diabetes" description="Insulin-dependent diabetes (not Type 2)" />
-        <Checkbox field="hasKidneyDisease" label="I have chronic kidney disease" description="CKD stage 3 or above, or on dialysis" />
-        <Checkbox field="hasLiverDisease" label="I have liver disease" description="Cirrhosis, hepatitis, or other significant liver condition" />
-        <Checkbox field="isPregnant" label="I am currently pregnant" />
+        <Checkbox field="hasType1Diabetes" label="I have Type 1 Diabetes" description="Insulin-dependent diabetes (not Type 2)" form={form} toggle={toggle} />
+        <Checkbox field="hasKidneyDisease" label="I have chronic kidney disease" description="CKD stage 3 or above, or on dialysis" form={form} toggle={toggle} />
+        <Checkbox field="hasLiverDisease" label="I have liver disease" description="Cirrhosis, hepatitis, or other significant liver condition" form={form} toggle={toggle} />
+        <Checkbox field="isPregnant" label="I am currently pregnant" form={form} toggle={toggle} />
 
         <label style={{ display: 'flex', flexDirection: 'column', gap: 6, margin: '16px 0' }}>
           <span style={{ fontWeight: 600, fontSize: 14 }}>Current medications <span style={{ color: '#888', fontWeight: 400 }}>(optional)</span></span>

@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function ProtocolPhase({ status }: Props) {
-  const { label, color } = PHASE_LABELS[status.phase]
+  const { label, color } = PHASE_LABELS[status.phase as keyof typeof PHASE_LABELS] ?? { label: status.phase, color: '#888' }
 
   return (
     <div>
