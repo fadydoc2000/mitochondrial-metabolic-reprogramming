@@ -1,0 +1,63 @@
+# Dependencies
+node_modules/
+/.pnp
+.pnp.js
+
+# Testing
+/coverage
+
+# Production
+/build
+/dist
+
+# Misc
+.DS_Thumbs
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.ipynb_checkpoints*
+
+# Miscellaneous
+*.tmp
+*.bak
+*.swp
+
+# Logs
+logs
+*.log
+
+# Environment variables
+.env
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Docker
+.dockerignore
+
+# Misc
+*.tmp
+*.bak
+*.swp
+
+# Package files
+*.toml
+*.lock
+
+# IDE
+.idea/
+*.sublime-project
+*.sublime-workspace
