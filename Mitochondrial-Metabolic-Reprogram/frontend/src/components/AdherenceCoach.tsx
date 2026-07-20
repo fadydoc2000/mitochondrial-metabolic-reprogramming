@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getAdherence } from '../services/api'
 import type { AdherenceStatus } from '../services/api'
 

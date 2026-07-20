@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getBiomarkerLatest, getProtocolStatus } from '../services/api'
 import type { BiomarkerReading, ProtocolStatus } from '../types/biomarker'
 import MetricCard from '../components/MetricCard'

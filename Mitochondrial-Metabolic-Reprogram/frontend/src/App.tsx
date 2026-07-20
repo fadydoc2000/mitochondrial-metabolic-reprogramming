@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { getToken, getRole, logout } from './services/auth'
 import { getProfile } from './services/api'
+import LandingPage from './pages/LandingPage'
 import AuthPage from './pages/AuthPage'
 import BiomarkerDashboard from './pages/BiomarkerDashboard'
 import ProtocolGuidance from './pages/ProtocolGuidance'
@@ -8,10 +9,10 @@ import ProviderPortal from './pages/ProviderPortal'
 import SafetyAssessment from './components/SafetyAssessment'
 
 type Page = 'dashboard' | 'protocol' | 'provider-portal'
-type AppState = 'loading' | 'auth' | 'safety' | 'app'
+type AppState = 'loading' | 'landing' | 'auth' | 'safety' | 'app'
 
 export default function App() {
-  const [state, setState] = useState<AppState>(getToken() ? 'loading' : 'auth')
+  const [state, setState] = useState<AppState>(getToken() ? 'loading' : 'landing')
   const [page, setPage] = useState<Page>('dashboard')
 
   useEffect(() => {
@@ -24,7 +25,7 @@ export default function App() {
   }, [state])
 
   const handleAuth = () => setState('loading')
-  const handleLogout = () => { logout(); setState('auth') }
+  const handleLogout = () => { logout(); setState('landing') }
   const handleSafetyComplete = () => setState('app')
 
   if (state === 'loading') {
@@ -35,6 +36,7 @@ export default function App() {
     )
   }
 
+  if (state === 'landing') return <LandingPage onStart={() => setState('auth')} />
   if (state === 'auth') return <AuthPage onAuth={handleAuth} />
   if (state === 'safety') return <SafetyAssessment onComplete={handleSafetyComplete} />
 

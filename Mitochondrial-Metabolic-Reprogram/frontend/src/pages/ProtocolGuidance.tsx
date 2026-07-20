@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getProtocolEducation, getProtocolStatus } from '../services/api'
 import type { ProtocolStatus } from '../types/biomarker'
 import ProtocolPhaseWidget from '../components/ProtocolPhase'

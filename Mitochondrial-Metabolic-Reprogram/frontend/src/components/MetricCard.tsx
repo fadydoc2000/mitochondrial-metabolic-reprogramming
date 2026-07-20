@@ -1,4 +1,3 @@
-import React from 'react'
 import type { MetabolicZone } from '../types/biomarker'
 
 const ZONE_COLORS: Record<MetabolicZone, string> = {

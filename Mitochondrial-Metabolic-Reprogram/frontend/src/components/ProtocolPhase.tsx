@@ -1,4 +1,3 @@
-import React from 'react'
 import type { ProtocolStatus } from '../types/biomarker'
 
 const PHASE_LABELS = {

@@ -85,7 +85,7 @@ export default function ResearchParticipation() {
         </div>
         <button onClick={toggle} disabled={saving}
           style={{
-            padding: '10px 20px', borderRadius: 6, border: 'none', fontWeight: 600, fontSize: 14, cursor: 'pointer', flexShrink: 0,
+            padding: '10px 20px', borderRadius: 6, fontWeight: 600, fontSize: 14, cursor: 'pointer', flexShrink: 0,
             background: consented ? '#fff' : '#1565c0',
             color: consented ? '#c62828' : '#fff',
             border: consented ? '1px solid #ef9a9a' : 'none',

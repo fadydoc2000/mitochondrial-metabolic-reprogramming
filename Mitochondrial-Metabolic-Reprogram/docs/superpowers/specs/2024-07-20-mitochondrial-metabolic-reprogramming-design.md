@@ -1,105 +1,44 @@
 # Mitochondrial Metabolic Reprogramming Application Design Document
 
 **Date**: July 20, 2024  
-**Version**: 2.0 (Updated with 2024-2026 Clinical Evidence)  
+**Version**: 1.0  
 **Status**: Approved  
-**Research Base**: Thomas Seyfried's Latest Publications (2024-2026)
 
 ## 1. Executive Summary
 
-The Mitochondrial Metabolic Reprogramming (MMR) web application is a **public, non-profit digital health tool** that empowers users to understand and manage their metabolic state using cutting-edge evidence-based metrics and protocols. Built on Professor Thomas Seyfried's 2024-2026 research, the app features:
-
-- **Glucose-Ketone Index (GKI) Tracking**: Real-time monitoring of blood glucose and ketone levels with automatic therapeutic zone classification (< 1.0 for therapeutic ketosis)
-- **Press-Pulse Protocol Guidance**: Structured framework combining sustained metabolic stress ("Press") with targeted interventions ("Pulse")
-- **Clinical Outcome Evidence**: Based on research demonstrating 66.7% 3-year survival rates in glioblastoma patients with protocol adherence (vs. typical 12-15 month median)
-- **Integrated Biomarker Dashboard**: Tracking glucose, ketones, inflammatory markers (CRP, IL-6), lipid panel, liver function with clinical thresholds
-- **Device Integration**: Real-time data from Continuous Glucose Monitors (Dexcom, Freestyle Libre), ketone meters (Keto-Mojo), and wearables
-- **Adherence Coaching**: Evidence shows only 33% adherence rate in clinical studies; the app maximizes compliance through behavioral science
-- **Medical Provider Collaboration**: Secure reporting for healthcare providers with consent-based data sharing
-- **Safety Screening**: Comprehensive contraindication assessment and drug-diet interaction checking
-- **Research Contribution**: Optional opt-in participation in de-identified research to advance metabolic therapy science
+The Mitochondrial Metabolic Reprogramming (MMR) web application helps users understand their metabolic health status according to Professor Thomas Seyfried's research on mitochondrial damage and metabolic vulnerability zones. It guides users from assessing their current zone (red/yellow/green) through personalized action plans to achieve and maintain optimal metabolic health (green zone).
 
 ## 2. Core Purpose & User Journey
-
 ### Core Purpose
-The application empowers users to understand and manage their metabolic health through:
-- **Evidence-Based Biomarker Tracking**: Glucose-Ketone Index (GKI) as primary metric for metabolic state
-- **Clinical Protocol Support**: Press-Pulse Protocol framework with structured "Press" (sustained metabolic stress) and "Pulse" (targeted interventions) phases
-- **Real-Time Device Integration**: Seamless data from CGM, ketone meters, and wearables
-- **Adherence Optimization**: Research-backed behavioral science to maximize protocol compliance (critical success factor)
-- **Safety-First Approach**: Comprehensive contraindication screening and biomarker safety monitoring
-- **Medical Collaboration**: Secure provider integration with clinical-grade reporting
-- **Educational Resources**: Peer-reviewed Seyfried research translated for public understanding
-- **Research Contribution**: Opportunity to participate in advancing metabolic therapy science
+The application empowers users to understand and improve their metabolic health through:
+- Scientific assessment based on mitochondrial research
+- Personalized nutrition and exercise planning
+- Educational resources grounded in peer-reviewed science
+- Progress tracking and adaptive planning
+- Optional healthcare provider collaboration
 
-### Primary User Journey (Updated for 2024-2026 Evidence)
-1. **Safety Screening** - Comprehensive contraindication assessment (medical conditions, medications, pregnancy)
-2. **Device Setup** - Optional connection to CGM, ketone meter, wearables for automatic data sync
-3. **Baseline Assessment** - Initial biomarker capture and metabolic state determination
-4. **Press-Pulse Protocol Guidance** - Users receive structured protocol education:
-   - **Press Phase**: Mediterranean-style ketogenic diet (2:1 to 2.5:1 fat-to-carbs ratio) for sustained metabolic stress
-   - **Pulse Phase**: Optional targeted interventions (HBOT, strategic fasting, evidence-based supplements)
-5. **GKI Tracking** - Daily/weekly monitoring with automatic calculations:
-   - Target: GKI < 1.0 for therapeutic ketosis
-   - Trending analysis and metabolic state classification
-6. **Adherence Coaching** - Behavioral support system maximizing compliance:
-   - Daily progress tracking and celebrations
-   - Motivational messaging tied to clinical outcomes
-   - Community support features
-7. **Biomarker Monitoring** - Extended metrics dashboard:
-   - Primary: Glucose, ketones, GKI
-   - Secondary: Lactate, inflammatory markers (CRP, IL-6), lipid panel, liver function
-   - Clinical alerts for concerning combinations
-8. **Provider Collaboration** (Optional) - Share reports with healthcare team
-9. **Research Participation** (Optional) - Contribute de-identified data to advance science
-10. **Ongoing Optimization** - Continuous protocol refinement based on biomarker trends
-
-### Key Success Triggers (Based on 2024-2026 Research)
-- **Adherence >6 months**: Critical threshold where therapeutic benefits emerge
-- **GKI Achievement**: Consistent achievement of therapeutic GKI (<1.0)
-- **Glucose Stability**: Fasting glucose <80 mg/dL with reduced postprandial spikes
-- **Ketone Production**: Sustained beta-hydroxybutyrate 2-5 mmol/L
-- **Biomarker Improvement**: Declining inflammatory markers, improving lipid profile
+### Primary User Journey
+1. **Onboarding & Assessment** - Users complete a metabolic health questionnaire
+2. **Zone Determination** - App calculates current zone (red: high metabolic vulnerability, yellow: moderate risk, green: optimal metabolic health)
+3. **Personalized Planning** - Users receive a customized 3-phase action plan:
+   - Phase 1: Stabilization (immediate actions to reduce metabolic stressors)
+   - Phase 2: Rehabilitation (building metabolic flexibility)
+   - Phase 3: Optimization (maintaining and enhancing zone green status)
+4. **Tracking & Progress** - Users log key metrics and complete periodic reassessments
+5. **Plan Adaptation** - Action plans evolve based on progress and changing metrics
+6. **Education & Support** - Continuous access to Seyfried-research-based educational content
 
 ### User Types Served
 - **General Public**: Users seeking to understand and improve metabolic health
 - **Patients**: Individuals managing metabolic conditions seeking structured guidance
 - **Healthcare Professionals**: Providers who can review patient progress reports (view-only access for shared data)
 
-### Success Metrics (Evidence-Based)
-
-**Adherence Metrics:**
-- >70% of users continue past 6 months (critical for therapeutic benefit)
-- >80% weekly GKI logging compliance among active users
-- Protocol adherence tracking with >50% reporting >90% dietary compliance
-
-**Clinical Outcome Metrics:**
-- >60% of users achieve therapeutic GKI (<1.0) within 90 days
-- >70% achieve fasting glucose <80 mg/dL within 90 days
-- >70% achieve ketone levels 2-5 mmol/L within 90 days
-- Average 15% reduction in inflammatory markers (CRP) over 12 weeks
-- Users report improved energy and mental clarity (self-reported >70%)
-
-**Safety Metrics:**
-- Zero preventable adverse events through proper screening
-- <1% of users experiencing unintended weight loss concerns
-- <3% experiencing GI side effects requiring protocol modification
-
-**Engagement Metrics:**
-- Daily active user engagement >60% for month 1-3
-- Community participation (forum posts, peer support) among >30% of users
-- Educational content completion rate >40%
-
-**Retention & Satisfaction:**
-- 30-day retention: >75%
-- 90-day retention: >50%
-- 6-month retention (critical threshold): >40%
-- Net Promoter Score (NPS): >40
-
-**Research Metrics:**
-- >25% opt-in to research data collection
-- De-identified data quality score >95%
-- Contribution to 1-2 peer-reviewed publications within 18 months
+### Success Metrics
+- User completion of initial assessment and first action plan
+- Regular metric logging frequency (target: 3+ times/week)
+- Progression toward green zone metrics over 3-6 month periods
+- User-reported improvements in energy, metabolic markers, and wellbeing
+- Retention rates at 30, 60, 90 days
 
 ## 3. Technical Architecture
 

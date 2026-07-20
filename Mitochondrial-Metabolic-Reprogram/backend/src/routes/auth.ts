@@ -1,0 +1,49 @@
+import { Router, Request, Response } from 'express'
+import bcrypt from 'bcryptjs'
+import { prisma } from '../db'
+import { signToken } from '../middleware/auth'
+
+const router = Router()
+
+// POST /api/auth/register
+router.post('/register', async (req: Request, res: Response) => {
+  const { email, password, firstName, lastName } = req.body
+  if (!email || !password || !firstName || !lastName) {
+    res.status(400).json({ error: 'email, password, firstName, lastName required' })
+    return
+  }
+  try {
+    const existing = await prisma.user.findUnique({ where: { email } })
+    if (existing) { res.status(409).json({ error: 'Email already registered' }); return }
+
+    const passwordHash = await bcrypt.hash(password, 10)
+    const user = await prisma.user.create({
+      data: { email, passwordHash, firstName, lastName },
+    })
+    const token = signToken({ id: user.id, email: user.email, role: user.role })
+    res.status(201).json({ token, user: { id: user.id, email: user.email, firstName, lastName, role: user.role } })
+  } catch (err) {
+    res.status(500).json({ error: 'Registration failed' })
+  }
+})
+
+// POST /api/auth/login
+router.post('/login', async (req: Request, res: Response) => {
+  const { email, password } = req.body
+  if (!email || !password) { res.status(400).json({ error: 'email and password required' }); return }
+
+  try {
+    const user = await prisma.user.findUnique({ where: { email } })
+    if (!user) { res.status(401).json({ error: 'Invalid credentials' }); return }
+
+    const valid = await bcrypt.compare(password, user.passwordHash)
+    if (!valid) { res.status(401).json({ error: 'Invalid credentials' }); return }
+
+    const token = signToken({ id: user.id, email: user.email, role: user.role })
+    res.json({ token, user: { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role } })
+  } catch {
+    res.status(500).json({ error: 'Login failed' })
+  }
+})
+
+export default router
