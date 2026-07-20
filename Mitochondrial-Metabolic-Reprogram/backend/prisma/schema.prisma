@@ -37,9 +37,10 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  profile         Profile?
-  biomarkers      BiomarkerReading[]
-  assessments     Assessment[]
+  profile          Profile?
+  biomarkers       BiomarkerReading[]
+  assessments      Assessment[]
+  devices          DeviceConnection[]
   providerPatients ProviderPatient[] @relation("provider")
   providerOf       ProviderPatient[] @relation("patient")
 
@@ -112,6 +113,7 @@ model BiomarkerReading {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@unique([userId, readingAt, source])
   @@index([userId, readingAt])
   @@map("biomarker_readings")
 }
@@ -145,6 +147,26 @@ model Assessment {
 
   @@index([userId, assessmentDate])
   @@map("assessments")
+}
+
+// Connected medical devices — CGM, ketone meters, wearables
+model DeviceConnection {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  deviceType   String   // "dexcom" | "freestyle_libre" | "keto_mojo" | "abbott_xtra" | "apple_watch" | "oura" | "fitbit"
+  deviceName   String
+  accessToken  String?  // encrypted in prod
+  refreshToken String?
+  externalId   String?  // device-specific user/account id
+  isActive     Boolean  @default(true)
+  lastSyncAt   DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, deviceType])
+  @@map("device_connections")
 }
 
 // Links providers to patients (for collaboration feature — Task 12)

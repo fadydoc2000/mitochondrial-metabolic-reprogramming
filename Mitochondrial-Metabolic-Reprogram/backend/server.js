@@ -1,48 +1,43 @@
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
+require('dotenv').config()
+const express = require('express')
+const cors = require('cors')
+const helmet = require('helmet')
+const rateLimit = require('express-rate-limit')
 
-const app = express();
-const PORT = process.env.PORT || 5000;
+const app = express()
+const PORT = process.env.PORT || 5000
 
-// Middleware
-app.use(helmet());
-app.use(cors());
-app.use(express.json());
+app.use(helmet())
+app.use(cors())
+app.use(express.json())
+app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }))
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-});
-app.use(limiter);
-
-// Routes
-app.get('/', (req, res) => {
-  res.json({ message: 'Mitochondrial Metabolic Reprogramming API' });
-});
-
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
-});
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Something went wrong!' });
-});
-
-// 404 handler
-app.use('*', (req, res) => {
-  res.status(404).json({ message: 'Route not found' });
-});
-
+// Routes — TypeScript files transpiled at runtime via ts-node/register in dev,
+// or compiled to dist/ in production. For now load via require with ts-node.
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
+  require('ts-node').register({ transpileOnly: true })
 }
 
-module.exports = app;
+const biomarkersRouter = require('./src/routes/biomarkers').default
+const devicesRouter = require('./src/routes/devices').default
+const protocolRouter = require('./src/routes/protocol').default
+
+app.get('/', (_req, res) => res.json({ message: 'Mitochondrial Metabolic Reprogramming API' }))
+app.get('/health', (_req, res) => res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() }))
+
+app.use('/api/biomarkers', biomarkersRouter)
+app.use('/api/devices', devicesRouter)
+app.use('/api/protocol', protocolRouter)
+
+app.use((err, _req, res, _next) => {
+  console.error(err.stack)
+  res.status(500).json({ message: 'Something went wrong!' })
+})
+
+app.use('*', (_req, res) => res.status(404).json({ message: 'Route not found' }))
+
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+}
+
+module.exports = app
