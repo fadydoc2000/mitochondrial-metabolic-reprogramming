@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Communication Style
+
+**Caveman mode: full.** Terse prose. Drop articles, filler, pleasantries. Fragments OK. Technical terms exact. Code unchanged. Pattern: [thing] [action] [reason]. [next step]. Auto-clarity for security warnings or irreversible actions. `/caveman lite|full|ultra` to switch, "stop caveman" to exit.
+
 ## Project Overview
 
 This is a **non-profit, public-facing web application** for Mitochondrial Metabolic Reprogramming (MMR), grounded in Professor Thomas Seyfried's 2024-2026 research on metabolic cancer theory. The app helps people track their metabolic health via the Glucose-Ketone Index (GKI) and follow the Press-Pulse Protocol.
