@@ -60,7 +60,7 @@ export async function syncUserDevices(userId: number): Promise<number> {
 
     for (const r of readings) {
       let gkiData = {}
-      if (r.glucoseMgdl && r.ketoneMmol) {
+      if (r.glucoseMgdl != null && r.ketoneMmol != null) {
         try {
           const result = calculateGKI(r.glucoseMgdl, r.ketoneMmol)
           gkiData = { gkiScore: result.gki, metabolicState: result.state, metabolicZone: result.zone }

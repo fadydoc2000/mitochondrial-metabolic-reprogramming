@@ -64,7 +64,7 @@ router.get('/latest', async (req: Request, res: Response) => {
 
 // GET /api/biomarkers/history?days=30
 router.get('/history', async (req: Request, res: Response) => {
-  const days = Number(req.query.days ?? 30)
+  const days = Math.max(1, parseInt(String(req.query.days ?? '30'), 10) || 30)
   const since = new Date(Date.now() - days * 86_400_000)
 
   const readings = await prisma.biomarkerReading.findMany({
@@ -76,7 +76,7 @@ router.get('/history', async (req: Request, res: Response) => {
 
 // GET /api/biomarkers/gki-trend?days=30
 router.get('/gki-trend', async (req: Request, res: Response) => {
-  const days = Number(req.query.days ?? 30)
+  const days = Math.max(1, parseInt(String(req.query.days ?? '30'), 10) || 30)
   const since = new Date(Date.now() - days * 86_400_000)
 
   const readings = await prisma.biomarkerReading.findMany({

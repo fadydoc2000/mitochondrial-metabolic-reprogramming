@@ -1,4 +1,5 @@
 require('dotenv').config()
+require('express-async-errors')
 const express = require('express')
 const cors = require('cors')
 const helmet = require('helmet')
@@ -18,6 +19,7 @@ if (process.env.NODE_ENV !== 'test') {
   require('ts-node').register({ transpileOnly: true })
 }
 
+const authRouter = require('./src/routes/auth').default
 const biomarkersRouter = require('./src/routes/biomarkers').default
 const devicesRouter = require('./src/routes/devices').default
 const protocolRouter = require('./src/routes/protocol').default
@@ -25,6 +27,7 @@ const protocolRouter = require('./src/routes/protocol').default
 app.get('/', (_req, res) => res.json({ message: 'Mitochondrial Metabolic Reprogramming API' }))
 app.get('/health', (_req, res) => res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() }))
 
+app.use('/api/auth', authRouter)
 app.use('/api/biomarkers', biomarkersRouter)
 app.use('/api/devices', devicesRouter)
 app.use('/api/protocol', protocolRouter)

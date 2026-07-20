@@ -3,11 +3,23 @@ import jwt from 'jsonwebtoken'
 import { Role } from '@prisma/client'
 
 const JWT_SECRET = process.env.JWT_SECRET ?? 'dev-secret-change-in-prod'
+if (process.env.NODE_ENV === 'production' && JWT_SECRET === 'dev-secret-change-in-prod') {
+  throw new Error('JWT_SECRET must be set in production')
+}
 
 interface JwtPayload {
   id: number
   email: string
   role: Role
+}
+
+function isJwtPayload(v: unknown): v is JwtPayload {
+  return (
+    typeof v === 'object' && v !== null &&
+    typeof (v as JwtPayload).id === 'number' &&
+    typeof (v as JwtPayload).email === 'string' &&
+    typeof (v as JwtPayload).role === 'string'
+  )
 }
 
 export function authenticate(req: Request, res: Response, next: NextFunction) {
@@ -18,7 +30,12 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
   }
   try {
     const token = header.slice(7)
-    req.user = jwt.verify(token, JWT_SECRET) as JwtPayload
+    const decoded = jwt.verify(token, JWT_SECRET)
+    if (!isJwtPayload(decoded)) {
+      res.status(401).json({ error: 'Invalid token' })
+      return
+    }
+    req.user = decoded
     next()
   } catch {
     res.status(401).json({ error: 'Invalid token' })
