@@ -5,8 +5,11 @@ import MetricCard from '../components/MetricCard'
 import GKITracker from '../components/GKITracker'
 import ProtocolPhaseWidget from '../components/ProtocolPhase'
 import DeviceConnector from '../components/DeviceConnector'
+import AdherenceCoach from '../components/AdherenceCoach'
+import ProviderConnect from '../components/ProviderConnect'
+import ResearchParticipation from '../components/ResearchParticipation'
 
-type Tab = 'overview' | 'gki' | 'devices'
+type Tab = 'overview' | 'gki' | 'adherence' | 'providers' | 'devices' | 'research'
 
 export default function BiomarkerDashboard() {
   const [latest, setLatest] = useState<BiomarkerReading | null>(null)
@@ -38,7 +41,10 @@ export default function BiomarkerDashboard() {
       <div style={{ borderBottom: '1px solid #eee', marginBottom: 24, display: 'flex' }}>
         <button style={tabStyle('overview')} onClick={() => setTab('overview')}>Overview</button>
         <button style={tabStyle('gki')} onClick={() => setTab('gki')}>GKI Tracker</button>
+        <button style={tabStyle('adherence')} onClick={() => setTab('adherence')}>Adherence</button>
+        <button style={tabStyle('providers')} onClick={() => setTab('providers')}>Providers</button>
         <button style={tabStyle('devices')} onClick={() => setTab('devices')}>Devices</button>
+        <button style={tabStyle('research')} onClick={() => setTab('research')}>Research</button>
       </div>
 
       {tab === 'overview' && (
@@ -69,7 +75,10 @@ export default function BiomarkerDashboard() {
       )}
 
       {tab === 'gki' && <GKITracker />}
+      {tab === 'adherence' && <AdherenceCoach />}
+      {tab === 'providers' && <ProviderConnect />}
       {tab === 'devices' && <DeviceConnector />}
+      {tab === 'research' && <ResearchParticipation />}
     </div>
   )
 }

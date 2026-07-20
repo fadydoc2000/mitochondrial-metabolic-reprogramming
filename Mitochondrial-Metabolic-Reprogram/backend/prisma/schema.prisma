@@ -5,6 +5,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 enum Role {
@@ -65,6 +66,8 @@ model Profile {
   hasLiverDisease     Boolean  @default(false)
   isPregnant          Boolean  @default(false)
   currentMedications  String?
+  safetyScreeningCompletedAt DateTime?
+  researchConsentAt   DateTime?  // non-null = opted in; null = no consent
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
