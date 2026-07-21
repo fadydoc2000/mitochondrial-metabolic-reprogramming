@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { login, register } from '../services/auth'
+import './AuthPage.css'
 
 interface Props {
   onAuth: () => void
@@ -32,56 +33,120 @@ export default function AuthPage({ onAuth }: Props) {
     }
   }
 
-  const field = (label: string, value: string, onChange: (v: string) => void, type = 'text') => (
-    <label style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 12 }}>
-      <span style={{ fontSize: 12, color: '#666' }}>{label}</span>
-      <input
-        type={type} value={value} onChange={e => onChange(e.target.value)} required
-        style={{ padding: '10px 12px', borderRadius: 6, border: '1px solid #ccc', fontSize: 14 }}
-      />
-    </label>
-  )
-
   return (
-    <div style={{ minHeight: '100vh', background: '#f0f4f8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'system-ui, sans-serif' }}>
-      <div style={{ background: '#fff', borderRadius: 12, padding: 36, width: 360, boxShadow: '0 4px 24px rgba(0,0,0,0.08)' }}>
-        <div style={{ textAlign: 'center', marginBottom: 28 }}>
-          <div style={{ fontSize: 28, fontWeight: 700, color: '#1565c0' }}>MMR</div>
-          <div style={{ fontSize: 13, color: '#888', marginTop: 4 }}>Mitochondrial Metabolic Reprogramming</div>
-        </div>
-
-        <div style={{ display: 'flex', marginBottom: 24, borderRadius: 8, overflow: 'hidden', border: '1px solid #e0e0e0' }}>
-          {(['login', 'register'] as const).map(m => (
-            <button key={m} onClick={() => setMode(m)}
-              style={{ flex: 1, padding: '10px 0', border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: 13,
-                background: mode === m ? '#1565c0' : '#fff', color: mode === m ? '#fff' : '#555' }}>
-              {m === 'login' ? 'Sign In' : 'Register'}
-            </button>
-          ))}
-        </div>
-
-        <form onSubmit={submit}>
-          {mode === 'register' && (
-            <div style={{ display: 'flex', gap: 8 }}>
-              <div style={{ flex: 1 }}>{field('First Name', firstName, setFirstName)}</div>
-              <div style={{ flex: 1 }}>{field('Last Name', lastName, setLastName)}</div>
+    <div className="auth-page">
+      {/* Left panel — branding */}
+      <div className="auth-brand">
+        <div className="auth-brand-inner">
+          <div className="auth-logo">
+            <span className="auth-logo-mark">M</span>
+            <span className="auth-logo-name">Mitochondrial Metabolic Reprogramming</span>
+          </div>
+          <div className="auth-tagline">
+            Track the metabolism that<br /><em>fuels disease</em> — and shift it toward health.
+          </div>
+          <div className="auth-pillars">
+            <div className="auth-pillar">
+              <span className="auth-pillar-icon" style={{ background: 'rgba(255,255,255,0.15)' }}>◎</span>
+              <div>
+                <strong>Glucose-Ketone Index</strong>
+                <p>One number. Daily finger-prick. Track your shift into therapeutic ketosis.</p>
+              </div>
             </div>
-          )}
-          {field('Email', email, setEmail, 'email')}
-          {field('Password', password, setPassword, 'password')}
+            <div className="auth-pillar">
+              <span className="auth-pillar-icon" style={{ background: 'rgba(255,255,255,0.15)' }}>⬡</span>
+              <div>
+                <strong>Press-Pulse Protocol</strong>
+                <p>Sustained ketogenic diet + periodic metabolic stressors, grounded in Seyfried's research.</p>
+              </div>
+            </div>
+            <div className="auth-pillar">
+              <span className="auth-pillar-icon" style={{ background: 'rgba(255,255,255,0.15)' }}>✓</span>
+              <div>
+                <strong>Free · Non-profit · Evidence-based</strong>
+                <p>Built on Professor Thomas Seyfried's 2024–2026 published research.</p>
+              </div>
+            </div>
+          </div>
+          {/* Mini mitochondria SVG */}
+          <svg viewBox="0 0 220 120" xmlns="http://www.w3.org/2000/svg" className="auth-mito-svg">
+            <ellipse cx="110" cy="60" rx="104" ry="54" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="2"/>
+            <ellipse cx="110" cy="60" rx="82" ry="40" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" strokeDasharray="none"/>
+            <ellipse cx="110" cy="60" rx="56" ry="26" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.2)" strokeWidth="1"/>
+            {[0,1,2,3].map(i => (
+              <path key={i}
+                d={`M ${35 + i*44} 26 Q ${45 + i*44} 60 ${35 + i*44} 94`}
+                fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="2" strokeLinecap="round"
+              />
+            ))}
+            <text x="110" y="57" fontSize="10" fontWeight="700" fill="rgba(255,255,255,0.7)" textAnchor="middle">Matrix</text>
+            <text x="110" y="70" fontSize="8" fill="rgba(255,255,255,0.5)" textAnchor="middle">Krebs cycle · ATP</text>
+          </svg>
+        </div>
+      </div>
 
-          {error && <p style={{ color: '#c62828', fontSize: 13, margin: '0 0 12px' }}>{error}</p>}
+      {/* Right panel — form */}
+      <div className="auth-form-panel">
+        <div className="auth-card">
+          <div className="auth-card-head">
+            <h1 className="auth-card-title">
+              {mode === 'login' ? 'Welcome back' : 'Create your account'}
+            </h1>
+            <p className="auth-card-sub">
+              {mode === 'login'
+                ? 'Sign in to continue tracking your GKI and protocol.'
+                : "Free, private, and grounded in Seyfried’s research."}
+            </p>
+          </div>
 
-          <button type="submit" disabled={loading}
-            style={{ width: '100%', padding: '12px 0', borderRadius: 6, background: '#1565c0', color: '#fff',
-              border: 'none', fontWeight: 600, fontSize: 15, cursor: 'pointer', marginTop: 4 }}>
-            {loading ? '…' : mode === 'login' ? 'Sign In' : 'Create Account'}
-          </button>
-        </form>
+          <div className="auth-tabs">
+            {(['login', 'register'] as const).map(m => (
+              <button key={m} onClick={() => setMode(m)} className={`auth-tab${mode === m ? ' active' : ''}`}>
+                {m === 'login' ? 'Sign in' : 'Register'}
+              </button>
+            ))}
+          </div>
 
-        <p style={{ fontSize: 11, color: '#bbb', textAlign: 'center', marginTop: 20 }}>
-          Non-profit · Built on Seyfried 2024–2026 research
-        </p>
+          <form onSubmit={submit} className="auth-form">
+            {mode === 'register' && (
+              <div className="auth-name-row">
+                <label className="auth-field">
+                  <span>First name</span>
+                  <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} required placeholder="Jane" />
+                </label>
+                <label className="auth-field">
+                  <span>Last name</span>
+                  <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} required placeholder="Smith" />
+                </label>
+              </div>
+            )}
+            <label className="auth-field">
+              <span>Email</span>
+              <input type="email" value={email} onChange={e => setEmail(e.target.value)} required placeholder="you@example.com" />
+            </label>
+            <label className="auth-field">
+              <span>Password</span>
+              <input type="password" value={password} onChange={e => setPassword(e.target.value)} required placeholder={mode === 'register' ? 'At least 8 characters' : '••••••••'} />
+            </label>
+
+            {error && <p className="auth-error">{error}</p>}
+
+            <button type="submit" disabled={loading} className="auth-submit">
+              {loading ? '…' : mode === 'login' ? 'Sign in' : 'Create free account'}
+            </button>
+          </form>
+
+          <p className="auth-switch">
+            {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
+            <button onClick={() => setMode(mode === 'login' ? 'register' : 'login')} className="auth-switch-btn">
+              {mode === 'login' ? 'Register free' : 'Sign in'}
+            </button>
+          </p>
+
+          <p className="auth-fine">
+            Non-profit · Built on Seyfried 2024–2026 research · Not medical advice
+          </p>
+        </div>
       </div>
     </div>
   )

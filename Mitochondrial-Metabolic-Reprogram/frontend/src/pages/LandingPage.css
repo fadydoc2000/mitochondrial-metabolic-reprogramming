@@ -63,7 +63,7 @@
 }
 .mmrlp .nav-inner {
   max-width: var(--maxw); margin: 0 auto; padding: 14px 24px;
-  display: flex; align-items: center; gap: 28px;
+  display: flex; align-items: center; gap: 20px;
 }
 .mmrlp .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--ink); }
 .mmrlp .brand-mark {
@@ -73,8 +73,8 @@
   font-family: var(--sans);
 }
 .mmrlp .brand-name { font-family: var(--serif); letter-spacing: 0.2px; font-size: 17px; }
-.mmrlp .nav-links { display: flex; gap: 22px; margin-left: 8px; }
-.mmrlp .nav-links a { color: var(--ink-soft); font-size: 14px; font-weight: 500; }
+.mmrlp .nav-links { display: flex; gap: 16px; margin-left: 8px; flex-shrink: 0; }
+.mmrlp .nav-links a { color: var(--ink-soft); font-size: 13.5px; font-weight: 500; white-space: nowrap; }
 .mmrlp .nav-links a:hover { color: var(--ink); text-decoration: none; }
 .mmrlp .nav-actions { margin-left: auto; display: flex; gap: 12px; align-items: center; }
 
@@ -115,39 +115,44 @@
 .mmrlp .hero-fine { margin-top: 20px; font-size: 13px; color: var(--ink-muted); }
 .mmrlp .hero-fine strong { color: var(--ink-soft); font-weight: 600; }
 
-/* ---------- GKI gauge ---------- */
+/* ---------- GKI gauge (half-circle speedometer) ---------- */
+.mmrlp .gauge-wrap { display: flex; flex-direction: column; align-items: center; gap: 16px; }
 .mmrlp .gauge {
-  position: relative; width: 320px; height: 320px; margin: 0 auto;
-  display: grid; place-items: center;
+  position: relative; width: 340px; height: 185px; overflow: hidden;
 }
-.mmrlp .gauge-ring {
-  width: 100%; height: 100%; border-radius: 50%;
-  background: conic-gradient(
-    var(--green) 0 33.33%,
-    var(--yellow) 33.33% 66.66%,
-    var(--red) 66.66% 100%
-  );
-  -webkit-mask: radial-gradient(circle, transparent 56%, #000 57%);
-  mask: radial-gradient(circle, transparent 56%, #000 57%);
+.mmrlp .gauge svg { width: 100%; height: auto; display: block; }
+.mmrlp .gauge-readout {
+  text-align: center; line-height: 1.2;
 }
-.mmrlp .gauge-needle {
-  position: absolute; top: 50%; left: 50%; width: 6px; height: 38%;
-  background: var(--ink); border-radius: 4px;
-  transform-origin: bottom center;
-  transform: translate(-50%, -100%) rotate(40deg);
-}
-.mmrlp .gauge-core {
-  position: absolute; text-align: center; line-height: 1.2;
-}
-.mmrlp .gauge-core .label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); }
-.mmrlp .gauge-core .value { font-family: var(--serif); font-size: 2rem; font-weight: 600; margin: 4px 0; }
-.mmrlp .gauge-core .zone { font-size: 12.5px; font-weight: 700; color: var(--green); }
-.mmrlp .gauge-legend { display: flex; justify-content: space-between; gap: 8px; margin-top: 22px; font-size: 12px; color: var(--ink-muted); }
-.mmrlp .gauge-legend span { display: flex; align-items: center; gap: 6px; }
-.mmrlp .gauge-legend i { width: 10px; height: 10px; border-radius: 3px; }
+.mmrlp .gauge-readout .label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); }
+.mmrlp .gauge-readout .value { font-family: var(--serif); font-size: 2rem; font-weight: 600; margin: 4px 0; color: var(--ink); }
+.mmrlp .gauge-readout .zone { font-size: 13px; font-weight: 700; color: var(--green); letter-spacing: 0.04em; }
+.mmrlp .gauge-legend { display: flex; justify-content: center; gap: 20px; font-size: 12px; color: var(--ink-muted); }
+.mmrlp .gauge-legend span { display: flex; align-items: center; gap: 5px; }
+.mmrlp .gauge-legend i { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
 .mmrlp .gauge-legend .g i { background: var(--green); }
 .mmrlp .gauge-legend .y i { background: var(--yellow); }
 .mmrlp .gauge-legend .r i { background: var(--red); }
+
+/* ---------- Mitochondria visual row ---------- */
+.mmrlp .mito-visual-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-bottom: 48px;
+}
+.mmrlp .mito-illus-card, .mmrlp .mito-pathway-card {
+  background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius);
+  padding: 24px; display: flex; flex-direction: column; gap: 14px;
+}
+.mmrlp .mito-illus-label {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.mmrlp .mito-svg { width: 100%; height: auto; display: block; border-radius: 8px; }
+.mmrlp .mito-illus-caption {
+  font-size: 13px; color: var(--ink-soft); line-height: 1.5; margin: 0;
+}
+@media (max-width: 860px) {
+  .mmrlp .mito-visual-row { grid-template-columns: 1fr; }
+}
 
 /* ---------- Sections ---------- */
 .mmrlp section.block { padding: var(--pad-y) 0; border-top: 1px solid var(--rule); }
@@ -167,7 +172,8 @@
 .mmrlp .stat { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 30px; }
 .mmrlp .stat .n { font-family: var(--serif); font-size: 2.6rem; font-weight: 600; color: var(--primary); line-height: 1; }
 .mmrlp .stat .t { margin-top: 10px; font-size: 14px; color: var(--ink-soft); }
-.mmrlp .stat .src { margin-top: 8px; font-size: 11.5px; color: var(--ink-muted); }
+.mmrlp .stat .src { margin-top: 8px; font-size: 11.5px; color: var(--ink-muted); text-decoration: none; display: block; }
+.mmrlp .stat a.src:hover { color: var(--primary); text-decoration: underline; }
 
 /* ---------- Cards grid ---------- */
 .mmrlp .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
@@ -202,7 +208,8 @@
 
 /* ---------- Citations ---------- */
 .mmrlp .cites { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 32px; }
-.mmrlp .cite { font-size: 12.5px; color: var(--ink-soft); background: var(--surface); border: 1px solid var(--rule); border-radius: 999px; padding: 7px 14px; }
+.mmrlp .cite { font-size: 12.5px; color: var(--ink-soft); background: var(--surface); border: 1px solid var(--rule); border-radius: 999px; padding: 7px 14px; text-decoration: none; transition: border-color 0.12s, color 0.12s; }
+.mmrlp a.cite:hover { color: var(--primary); border-color: var(--primary); }
 
 /* ---------- Disclaimer ---------- */
 .mmrlp .disclaimer {
