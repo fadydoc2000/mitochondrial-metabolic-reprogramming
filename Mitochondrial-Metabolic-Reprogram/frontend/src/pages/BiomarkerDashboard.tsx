@@ -8,8 +8,18 @@ import DeviceConnector from '../components/DeviceConnector'
 import AdherenceCoach from '../components/AdherenceCoach'
 import ProviderConnect from '../components/ProviderConnect'
 import ResearchParticipation from '../components/ResearchParticipation'
+import './BiomarkerDashboard.css'
 
 type Tab = 'overview' | 'gki' | 'adherence' | 'providers' | 'devices' | 'research'
+
+const TABS: { id: Tab; label: string }[] = [
+  { id: 'overview', label: 'Overview' },
+  { id: 'gki', label: 'GKI Tracker' },
+  { id: 'adherence', label: 'Adherence' },
+  { id: 'providers', label: 'Providers' },
+  { id: 'devices', label: 'Devices' },
+  { id: 'research', label: 'Research' },
+]
 
 export default function BiomarkerDashboard() {
   const [latest, setLatest] = useState<BiomarkerReading | null>(null)
@@ -21,36 +31,29 @@ export default function BiomarkerDashboard() {
     getProtocolStatus().then(setProtocol).catch(() => {})
   }, [])
 
-  const tabStyle = (t: Tab) => ({
-    padding: '8px 20px',
-    border: 'none',
-    borderBottom: tab === t ? '2px solid #1565c0' : '2px solid transparent',
-    background: 'none',
-    cursor: 'pointer',
-    fontWeight: tab === t ? 600 : 400,
-    color: tab === t ? '#1565c0' : '#555',
-  })
-
   return (
-    <div style={{ maxWidth: 900, margin: '0 auto', padding: 24, fontFamily: 'system-ui, sans-serif' }}>
-      <h1 style={{ margin: '0 0 4px' }}>Metabolic Dashboard</h1>
-      <p style={{ color: '#888', margin: '0 0 24px', fontSize: 13 }}>
-        Mitochondrial Metabolic Reprogramming · Press-Pulse Protocol
-      </p>
+    <div className="bmd">
+      <h1 className="bmd-heading">Metabolic Dashboard</h1>
+      <p className="bmd-sub">Mitochondrial Metabolic Reprogramming · Press-Pulse Protocol</p>
 
-      <div style={{ borderBottom: '1px solid #eee', marginBottom: 24, display: 'flex' }}>
-        <button style={tabStyle('overview')} onClick={() => setTab('overview')}>Overview</button>
-        <button style={tabStyle('gki')} onClick={() => setTab('gki')}>GKI Tracker</button>
-        <button style={tabStyle('adherence')} onClick={() => setTab('adherence')}>Adherence</button>
-        <button style={tabStyle('providers')} onClick={() => setTab('providers')}>Providers</button>
-        <button style={tabStyle('devices')} onClick={() => setTab('devices')}>Devices</button>
-        <button style={tabStyle('research')} onClick={() => setTab('research')}>Research</button>
+      <div className="bmd-tabs" role="tablist">
+        {TABS.map(t => (
+          <button
+            key={t.id}
+            role="tab"
+            aria-selected={tab === t.id}
+            className={`bmd-tab${tab === t.id ? ' active' : ''}`}
+            onClick={() => setTab(t.id)}
+          >
+            {t.label}
+          </button>
+        ))}
       </div>
 
       {tab === 'overview' && (
         <div>
           {latest && (
-            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 32 }}>
+            <div className="bmd-metrics">
               <MetricCard label="Blood Glucose" value={latest.bloodGlucoseMgdl} unit="mg/dL" zone={latest.metabolicZone} subtitle="target <80" />
               <MetricCard label="Ketones" value={latest.betaHydroxybutyrateMmol} unit="mmol/L" zone={latest.metabolicZone} subtitle="target 2–5" />
               <MetricCard label="GKI" value={latest.gkiScore} zone={latest.metabolicZone} subtitle="target <1.0" />
@@ -60,14 +63,14 @@ export default function BiomarkerDashboard() {
           )}
 
           {!latest && (
-            <div style={{ padding: 32, textAlign: 'center', color: '#888', border: '1px dashed #ddd', borderRadius: 8, marginBottom: 32 }}>
+            <div className="bmd-empty">
               No readings yet. Log your first glucose and ketone values in the GKI Tracker tab.
             </div>
           )}
 
           {protocol && (
-            <div style={{ border: '1px solid #e0e0e0', borderRadius: 8, padding: 20 }}>
-              <h2 style={{ margin: '0 0 16px', fontSize: 16 }}>Protocol Status</h2>
+            <div className="bmd-protocol">
+              <p className="bmd-protocol-heading">Protocol Status</p>
               <ProtocolPhaseWidget status={protocol} />
             </div>
           )}

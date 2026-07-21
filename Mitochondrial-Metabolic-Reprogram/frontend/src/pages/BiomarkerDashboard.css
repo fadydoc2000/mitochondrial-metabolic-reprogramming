@@ -1,0 +1,93 @@
+/* BiomarkerDashboard */
+
+.bmd {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+}
+
+.bmd-heading {
+  margin: 0 0 3px;
+  font-family: var(--serif);
+  font-size: clamp(1.4rem, 3vw, 1.75rem);
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.bmd-sub {
+  color: var(--ink-muted);
+  margin: 0 0 28px;
+  font-size: 13px;
+}
+
+/* Tab bar */
+.bmd-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 28px;
+  gap: 0;
+}
+
+.bmd-tab {
+  padding: 9px 18px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 400;
+  font-family: var(--sans);
+  color: var(--ink-soft);
+  transition: color 0.12s, border-color 0.12s;
+  margin-bottom: -1px;
+}
+
+.bmd-tab:hover {
+  color: var(--primary);
+}
+
+.bmd-tab.active {
+  color: var(--primary);
+  font-weight: 600;
+  border-bottom-color: var(--primary);
+}
+
+/* Metric row */
+.bmd-metrics {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+
+/* Empty state */
+.bmd-empty {
+  padding: 36px 24px;
+  text-align: center;
+  color: var(--ink-muted);
+  border: 1px dashed var(--rule);
+  border-radius: var(--radius);
+  margin-bottom: 32px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Protocol status card */
+.bmd-protocol {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  background: var(--surface);
+}
+
+.bmd-protocol-heading {
+  margin: 0 0 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-family: var(--sans);
+}
