@@ -53,6 +53,10 @@ Thumbs.db
 *.bak
 *.swp
 
+# Local tooling output
+graphify-out/
+.claude/plugins/
+
 # Package files
 *.toml
 *.lock
