@@ -156,18 +156,25 @@ vi.mock('../services/auth', () => ({
 
 ## 3 — Code Review Gate
 
-**Run before every `git push`:** `/code-review`  
-**Before phase-ending PRs:** `/code-review ultra`
+Run both in order before every `git push`:
 
-The pre-push hook enforces this interactively. The hook reads from `/dev/tty` so must be run from a real terminal — Claude Code non-interactive sessions cannot satisfy it. Run:
+```
+1. /ponytail:ponytail-review   complexity check on the diff (dead code, unused deps, shrinkable logic)
+2. /code-review                correctness + security check (bugs, null derefs, missing guards)
+3. git push                    pre-push hook confirms review was done
+```
+
+**Before phase-ending PRs:** `/code-review ultra` (deeper multi-agent pass; still run ponytail-review first).
+
+The pre-push hook reads from `/dev/tty` — must be run from a real terminal. Claude Code non-interactive sessions cannot satisfy it:
 
 ```bash
 git push origin <branch>
 # hook prompts: "Have you run /code-review? [y/N]"
-# answer y after running /code-review here
+# answer y after running both commands above
 ```
 
-Fix all **CONFIRMED** findings before pushing. **PLAUSIBLE** findings: fix or add an inline comment explaining why deferred.
+Fix all **CONFIRMED** findings from either tool before pushing. **PLAUSIBLE** findings: fix or add an inline comment explaining why deferred.
 
 ---
 
