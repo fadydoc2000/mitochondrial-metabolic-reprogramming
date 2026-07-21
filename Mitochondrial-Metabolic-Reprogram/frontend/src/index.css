@@ -1,12 +1,28 @@
+:root {
+  --bg: #f7f5f0;
+  --surface: #ffffff;
+  --ink: #1b1b19;
+  --ink-soft: #54524c;
+  --ink-muted: #8a877f;
+  --rule: #e4ddcf;
+  --primary: #0d47a1;
+  --primary-ink: #0a3a82;
+  --primary-tint: #e8eef7;
+  --accent: #b8762a;
+  --green: #2e7d32;
+  --red: #c62828;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --serif: Charter, "Iowan Old Style", Cambria, Georgia, "Times New Roman", serif;
+  --radius: 14px;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: var(--sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f5f5f5;
-  color: #333;
+  background-color: var(--bg);
+  color: var(--ink);
 }
 
 code {

@@ -1,4 +1,5 @@
 import { prisma } from '../db'
+import { computeAdherence } from './adherenceCoach'
 
 export interface AnonymizedRecord {
   // No PII — no name, email, or user ID
@@ -56,16 +57,7 @@ export async function getAnonymizedResearchData(): Promise<AnonymizedRecord[]> {
       orderBy: { readingAt: 'asc' },
     })
 
-    const now = new Date()
-    const thirtyDaysAgo = new Date(now.getTime() - 30 * 86_400_000)
-    const daySet = new Set(allGkiReadings.map(r => r.readingAt.toISOString().slice(0, 10)))
-    const recentDays = allGkiReadings.filter(r => r.readingAt >= thirtyDaysAgo)
-    const recentDaySet = new Set(recentDays.map(r => r.readingAt.toISOString().slice(0, 10)))
-    const adherencePct = Math.round((recentDaySet.size / 30) * 100)
-
-    // Current streak (simplified: just use totalDaysLogged, no streak logic here)
-    const totalDaysLogged = daySet.size
-
+    const adherence = computeAdherence(allGkiReadings.map(r => r.readingAt))
     const latestReading = allGkiReadings[allGkiReadings.length - 1]
     const gkiInTherapeuticRange = allGkiReadings.filter(r => (r.gkiScore ?? 99) < 1.0).length
 
@@ -73,9 +65,9 @@ export async function getAnonymizedResearchData(): Promise<AnonymizedRecord[]> {
       cohortWeek: isoWeek(profile.researchConsentAt!),
       daysOnProtocol: latestAssessment?.daysOnProtocol ?? null,
       protocolPhase: latestAssessment?.protocolPhase ?? null,
-      currentStreakDays: 0, // ponytail: stub — adherenceCoach not imported to keep deps minimal
-      totalDaysLogged,
-      adherencePercent30d: adherencePct,
+      currentStreakDays: adherence.currentStreakDays,
+      totalDaysLogged: adherence.totalDaysLogged,
+      adherencePercent30d: adherence.adherencePercent,
       latestGkiScore: latestReading?.gkiScore ?? null,
       latestMetabolicZone: latestReading?.metabolicZone ?? null,
       hasType1Diabetes: profile.hasType1Diabetes,

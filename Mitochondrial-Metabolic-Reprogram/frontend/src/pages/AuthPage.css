@@ -1,22 +1,6 @@
 /* AuthPage — two-panel layout matching landing page design system */
 
 .auth-page {
-  --primary: #0d47a1;
-  --primary-ink: #0a3a82;
-  --primary-tint: #e8eef7;
-  --green: #2e7d32;
-  --ink: #1b1b19;
-  --ink-soft: #54524c;
-  --ink-muted: #8a877f;
-  --rule: #e4ddcf;
-  --bg: #f7f5f0;
-  --surface: #ffffff;
-  --red: #c62828;
-  --accent: #b8762a;
-  --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --serif: Charter, "Iowan Old Style", Cambria, Georgia, "Times New Roman", serif;
-  --radius: 14px;
-
   display: flex;
   min-height: 100vh;
   font-family: var(--sans);
@@ -160,7 +144,6 @@
 /* Tabs */
 .auth-tabs {
   display: flex;
-  gap: 0;
   margin-bottom: 24px;
   border: 1px solid var(--rule);
   border-radius: 10px;
