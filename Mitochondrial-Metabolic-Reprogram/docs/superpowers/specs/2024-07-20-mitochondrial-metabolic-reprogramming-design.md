@@ -18,6 +18,7 @@ The application empowers users to understand and improve their metabolic health 
 - Optional healthcare provider collaboration
 
 ### Primary User Journey
+0. **Public Landing Page** - Unauthenticated entry point. Presents Seyfried's research, GKI concept, metabolic zones, and the Press-Pulse Protocol. Citation links to PubMed. CTA routes to auth.
 1. **Onboarding & Assessment** - Users complete a metabolic health questionnaire
 2. **Zone Determination** - App calculates current zone (red: high metabolic vulnerability, yellow: moderate risk, green: optimal metabolic health)
 3. **Personalized Planning** - Users receive a customized 3-phase action plan:

@@ -19,7 +19,7 @@ Clinical evidence reference: [`docs/CLINICAL_RESEARCH_INTEGRATION.md`](docs/CLIN
 npm workspaces monorepo:
 
 ```
-frontend/   React 18 CRA app (port 3000)
+frontend/   React 18 + Vite app (port 3000)
 backend/    Express.js API (port 5000)
 docs/       Implementation plan, design spec, clinical research notes
 ```
@@ -54,7 +54,7 @@ cd backend && npm run dev # port 5000, nodemon watch mode
 
 # Tests
 npm test                  # all workspaces
-npm run test:frontend     # react-scripts test (watch mode by default, add -- --watchAll=false for CI)
+npm run test:frontend     # Vitest (watch mode by default; add -- --run for CI)
 npm run test:backend      # jest
 
 # Frontend production build
@@ -63,7 +63,7 @@ cd frontend && npm run build
 
 ## Architecture
 
-**Backend** (`backend/server.js`): Express with `helmet`, `cors`, and `express-rate-limit` wired. Entry point exports `app` so `supertest` can import without binding a port. Routes are TypeScript (transpiled at runtime via `ts-node` in dev; compile to `dist/` for production). PostgreSQL 15 via Docker + Prisma ORM. Redis 7 via Docker (not yet wired to routes).
+**Backend** (`backend/server.js`): Express with `helmet`, `cors`, and `express-rate-limit` wired. Entry point exports `app` so `supertest` can import without binding a port. Routes are TypeScript (transpiled at runtime via `ts-node` in dev; compile to `dist/` for production). PostgreSQL 15 via Docker + Prisma ORM. Redis 7 via Docker (package removed; deferred until caching is needed).
 
 **Frontend** (`frontend/src/`): React 18 + TypeScript + Vite. API calls via Axios (`frontend/src/services/api.ts`). Key pages: `BiomarkerDashboard`, `ProtocolGuidance`. Key components: `GKITracker`, `DeviceConnector`, `ProtocolPhase`, `MetricCard`.
 
@@ -71,7 +71,7 @@ cd frontend && npm run build
 
 ## Code Review Workflow
 
-**Mandatory gate: run `/code-review` before every `git push`.**
+**Mandatory gate: run `/mmr-ship` before every `git push`.** (Runs tests → doc update → ponytail-review → code-review → push.)
 
 Sequence for each phase or significant feature:
 
@@ -79,11 +79,13 @@ Sequence for each phase or significant feature:
 1. Write code
 2. npm test               # all workspaces — must pass
 3. git commit
-4. /code-review           # Claude Code slash command — medium effort by default
-                          # fix all CONFIRMED findings before proceeding
+4. /ponytail:ponytail-review   # complexity + dead code check — fix CONFIRMED findings
+5. /code-review           # correctness + security — fix all CONFIRMED findings
                           # PLAUSIBLE findings: fix or explicitly defer with a comment
-5. git push
+6. git push               # pre-push hook confirms review was done
 ```
+
+Use `/mmr-ship` to run steps 2–6 in the correct order.
 
 If working across multiple commits before a push, run `/code-review` on the full set of unpushed commits before the push (the command diffs against upstream automatically).
 
