@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { login, register } from '../services/auth'
+import React, { useState, useEffect } from 'react'
+import { login, register, forgotPassword, resetPassword } from '../services/auth'
 import './AuthPage.css'
 
 interface Props {
@@ -7,25 +7,50 @@ interface Props {
 }
 
 export default function AuthPage({ onAuth }: Props) {
-  const [mode, setMode] = useState<'login' | 'register'>('login')
+  const [mode, setMode] = useState<'login' | 'register' | 'forgot' | 'reset'>('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [resetToken, setResetToken] = useState<string | null>(null)
+
+  // Check URL for ?reset=<token> so reset links work
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const token = params.get('reset')
+    if (token) { setResetToken(token); setMode('reset') }
+  }, [])
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
+    setSuccess(null)
     setLoading(true)
     try {
       if (mode === 'login') {
         await login(email, password)
-      } else {
+        onAuth()
+      } else if (mode === 'register') {
         await register(email, password, firstName, lastName)
+        onAuth()
+      } else if (mode === 'forgot') {
+        const res = await forgotPassword(email)
+        if (res.resetToken) {
+          const link = `${window.location.origin}${window.location.pathname}?reset=${res.resetToken}`
+          setSuccess(`Reset link generated (email not yet configured). Copy and open this link:\n${link}`)
+        } else {
+          setSuccess('If that email is registered, a reset link has been sent.')
+        }
+      } else if (mode === 'reset') {
+        if (newPassword.length < 8) { setError('Password must be at least 8 characters'); setLoading(false); return }
+        await resetPassword(resetToken!, newPassword)
+        setSuccess('Password updated. You can now sign in.')
+        setTimeout(() => { setMode('login'); setSuccess(null) }, 2000)
       }
-      onAuth()
     } catch (err: any) {
       setError(err?.response?.data?.error ?? 'Something went wrong')
     } finally {
@@ -90,22 +115,28 @@ export default function AuthPage({ onAuth }: Props) {
         <div className="auth-card">
           <div className="auth-card-head">
             <h1 className="auth-card-title">
-              {mode === 'login' ? 'Welcome back' : 'Create your account'}
+              {mode === 'login' && 'Welcome back'}
+              {mode === 'register' && 'Create your account'}
+              {mode === 'forgot' && 'Reset your password'}
+              {mode === 'reset' && 'Choose a new password'}
             </h1>
             <p className="auth-card-sub">
-              {mode === 'login'
-                ? 'Sign in to continue tracking your GKI and protocol.'
-                : "Free, private, and grounded in Seyfried’s research."}
+              {mode === 'login' && 'Sign in to continue tracking your GKI and protocol.'}
+              {mode === 'register' && "Free, private, and grounded in Seyfried's research."}
+              {mode === 'forgot' && 'Enter your email and we will generate a reset link.'}
+              {mode === 'reset' && 'Enter your new password below.'}
             </p>
           </div>
 
-          <div className="auth-tabs">
-            {(['login', 'register'] as const).map(m => (
-              <button key={m} onClick={() => setMode(m)} className={`auth-tab${mode === m ? ' active' : ''}`}>
-                {m === 'login' ? 'Sign in' : 'Register'}
-              </button>
-            ))}
-          </div>
+          {(mode === 'login' || mode === 'register') && (
+            <div className="auth-tabs">
+              {(['login', 'register'] as const).map(m => (
+                <button key={m} onClick={() => { setMode(m); setError(null); setSuccess(null) }} className={`auth-tab${mode === m ? ' active' : ''}`}>
+                  {m === 'login' ? 'Sign in' : 'Register'}
+                </button>
+              ))}
+            </div>
+          )}
 
           <form onSubmit={submit} className="auth-form">
             {mode === 'register' && (
@@ -120,28 +151,64 @@ export default function AuthPage({ onAuth }: Props) {
                 </label>
               </div>
             )}
-            <label className="auth-field">
-              <span>Email</span>
-              <input type="email" value={email} onChange={e => setEmail(e.target.value)} required placeholder="you@example.com" />
-            </label>
-            <label className="auth-field">
-              <span>Password</span>
-              <input type="password" value={password} onChange={e => setPassword(e.target.value)} required placeholder={mode === 'register' ? 'At least 8 characters' : '••••••••'} />
-            </label>
+
+            {(mode === 'login' || mode === 'register' || mode === 'forgot') && (
+              <label className="auth-field">
+                <span>Email</span>
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)} required placeholder="you@example.com" />
+              </label>
+            )}
+
+            {(mode === 'login' || mode === 'register') && (
+              <label className="auth-field">
+                <span>Password</span>
+                <input type="password" value={password} onChange={e => setPassword(e.target.value)} required placeholder={mode === 'register' ? 'At least 8 characters' : '••••••••'} />
+              </label>
+            )}
+
+            {mode === 'login' && (
+              <div style={{ textAlign: 'right', marginTop: -4 }}>
+                <button type="button" className="auth-switch-btn" onClick={() => { setMode('forgot'); setError(null); setSuccess(null) }}>
+                  Forgot password?
+                </button>
+              </div>
+            )}
+
+            {mode === 'reset' && (
+              <label className="auth-field">
+                <span>New password</span>
+                <input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} required placeholder="At least 8 characters" minLength={8} />
+              </label>
+            )}
 
             {error && <p className="auth-error">{error}</p>}
+            {success && <p className="auth-success">{success}</p>}
 
             <button type="submit" disabled={loading} className="auth-submit">
-              {loading ? '…' : mode === 'login' ? 'Sign in' : 'Create free account'}
+              {loading ? '…'
+                : mode === 'login' ? 'Sign in'
+                : mode === 'register' ? 'Create free account'
+                : mode === 'forgot' ? 'Generate reset link'
+                : 'Set new password'}
             </button>
           </form>
 
-          <p className="auth-switch">
-            {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
-            <button onClick={() => setMode(mode === 'login' ? 'register' : 'login')} className="auth-switch-btn">
-              {mode === 'login' ? 'Register free' : 'Sign in'}
-            </button>
-          </p>
+          {(mode === 'login' || mode === 'register') && (
+            <p className="auth-switch">
+              {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
+              <button onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError(null) }} className="auth-switch-btn">
+                {mode === 'login' ? 'Register free' : 'Sign in'}
+              </button>
+            </p>
+          )}
+
+          {(mode === 'forgot' || mode === 'reset') && (
+            <p className="auth-switch">
+              <button onClick={() => { setMode('login'); setError(null); setSuccess(null) }} className="auth-switch-btn">
+                Back to sign in
+              </button>
+            </p>
+          )}
 
           <p className="auth-fine">
             Non-profit · Built on Seyfried 2024–2026 research · Not medical advice

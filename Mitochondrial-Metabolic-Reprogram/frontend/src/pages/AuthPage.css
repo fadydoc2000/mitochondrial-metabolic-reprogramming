@@ -214,6 +214,18 @@
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(13,71,161,0.12);
 }
+.auth-success {
+  font-size: 13px;
+  color: #166534;
+  margin: 0;
+  padding: 10px 12px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
 .auth-error {
   font-size: 13px;
   color: var(--red);
