@@ -30,6 +30,15 @@ export function getToken(): string | null {
   return localStorage.getItem('token')
 }
 
+export async function forgotPassword(email: string): Promise<{ resetToken?: string }> {
+  const r = await api.post<{ resetToken?: string; message?: string }>('/auth/forgot-password', { email })
+  return r.data
+}
+
+export async function resetPassword(token: string, password: string): Promise<void> {
+  await api.post('/auth/reset-password', { token, password })
+}
+
 export function getRole(): string | null {
   const token = getToken()
   if (!token) return null

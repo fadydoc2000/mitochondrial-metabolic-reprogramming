@@ -1,0 +1,169 @@
+.mito-diagram {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 24px;
+  align-items: start;
+  margin-bottom: 48px;
+  background: #07111f;
+  border: 1px solid #1e3a5f;
+  border-radius: 20px;
+  padding: 32px 24px;
+}
+
+.mito-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mito-panel-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  text-align: center;
+}
+.mito-panel-label--healthy { color: #4ade80; }
+.mito-panel-label--damaged { color: #ef4444; }
+
+.mito-panel-caption {
+  font-size: 12.5px;
+  color: #64748b;
+  line-height: 1.5;
+  text-align: center;
+  max-width: 260px;
+  margin: 0 auto;
+}
+
+.mito-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Divider */
+.mito-divider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding-top: 60px;
+}
+.mito-divider-line {
+  width: 1px;
+  flex: 1;
+  background: linear-gradient(to bottom, transparent, #1e3a5f 30%, #1e3a5f 70%, transparent);
+  min-height: 40px;
+}
+.mito-divider-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: #475569;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  letter-spacing: 0.1em;
+  background: #0f172a;
+  border: 1px solid #1e3a5f;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+/* Pulse animations on healthy cell fuel icons */
+.hc-fuel-glucose {
+  animation: hc-pulse-g 3s ease-in-out infinite;
+}
+.hc-fuel-ketone {
+  animation: hc-pulse-k 3s ease-in-out infinite;
+  animation-delay: 1.5s;
+}
+@keyframes hc-pulse-g {
+  0%, 100% { filter: drop-shadow(0 0 4px #16a34a88); }
+  50% { filter: drop-shadow(0 0 10px #4ade80cc); }
+}
+@keyframes hc-pulse-k {
+  0%, 100% { filter: drop-shadow(0 0 4px #1d4ed888); }
+  50% { filter: drop-shadow(0 0 10px #60a5facc); }
+}
+
+/* ATP badge pulse */
+.hc-atp-badge {
+  animation: hc-atp-pulse 2s ease-in-out infinite;
+}
+@keyframes hc-atp-pulse {
+  0%, 100% { filter: drop-shadow(0 0 6px #16a34a66); }
+  50% { filter: drop-shadow(0 0 16px #4ade80bb); }
+}
+
+/* Mitochondria body healthy subtle breathing */
+.hc-mito-body {
+  animation: hc-mito-breath 4s ease-in-out infinite;
+}
+@keyframes hc-mito-breath {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.92; }
+}
+
+/* Lactate badge pulse */
+.dc-lactate-badge {
+  animation: dc-lactate-pulse 2s ease-in-out infinite;
+}
+@keyframes dc-lactate-pulse {
+  0%, 100% { filter: drop-shadow(0 0 6px #dc262688); }
+  50% { filter: drop-shadow(0 0 18px #ef4444cc); }
+}
+
+/* Damaged glucose fuel flicker */
+.dc-fuel-glucose {
+  animation: dc-fuel-flicker 2.5s ease-in-out infinite;
+}
+@keyframes dc-fuel-flicker {
+  0%, 100% { filter: drop-shadow(0 0 6px #dc262666); }
+  40% { filter: drop-shadow(0 0 14px #ef4444cc); }
+  60% { filter: drop-shadow(0 0 8px #dc262688); }
+}
+
+/* Damaged mitochondria crackle/flicker */
+.dc-mito-body {
+  animation: dc-mito-crackle 3.5s ease-in-out infinite;
+}
+@keyframes dc-mito-crackle {
+  0%, 100% { opacity: 0.85; }
+  25% { opacity: 0.7; }
+  50% { opacity: 0.9; }
+  75% { opacity: 0.65; }
+}
+
+@media (max-width: 760px) {
+  .mito-diagram {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 20px 16px;
+  }
+  .mito-divider {
+    flex-direction: row;
+    padding-top: 0;
+  }
+  .mito-divider-line {
+    width: auto;
+    flex: 1;
+    height: 1px;
+    min-height: unset;
+    background: linear-gradient(to right, transparent, #1e3a5f 30%, #1e3a5f 70%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hc-fuel-glucose,
+  .hc-fuel-ketone,
+  .hc-atp-badge,
+  .hc-mito-body,
+  .dc-fuel-glucose,
+  .dc-mito-body,
+  .dc-lactate-badge {
+    animation: none;
+  }
+}

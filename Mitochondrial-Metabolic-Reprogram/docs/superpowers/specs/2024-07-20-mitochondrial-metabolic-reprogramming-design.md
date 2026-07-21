@@ -194,6 +194,20 @@ This design follows the Ponytail principle by:
 - Emphasizing deletion over addition - only including features that directly support the core purpose
 - Using boring, proven technologies rather than chasing novelty for its own sake
 
+## 6b. Component Updates (2026-07-21)
+
+### Authentication — forgot/reset password flow
+`AuthPage.tsx` now supports four modes: `login`, `register`, `forgot`, `reset`. A "Forgot password?" link appears on the login form. The forgot flow generates a reset token returned in the API response (no email service yet — link displayed in-UI for user to copy). Opening `/?reset=<token>` enters reset mode. `.auth-success` green alert style added.
+
+API additions: `POST /api/auth/forgot-password`, `POST /api/auth/reset-password`. DB: `User.passwordResetToken` (unique) + `User.passwordResetExpires`.
+
+### Landing page — animated metabolic pathway diagram
+`MitochondrialDiagram` component replaces the former static SVG cards. Two animated SVG panels (pure CSS + SVG SMIL, no library):
+- **Healthy cell**: Glucose → Glycolysis → Pyruvate (cytoplasm) → MPC → PDC→Acetyl-CoA (matrix) + BHB ketolysis → Krebs cycle → ETC → OXPHOS → ATP
+- **Damaged cell (Warburg)**: Glucose only → rapid glycolysis → Pyruvate → LDH bypass arc (cytoplasm) → Lactate + minimal ATP (both outside mitochondria oval)
+
+Labels respect correct compartmentalisation; `prefers-reduced-motion` disables animations.
+
 ## 7. Open Questions & Future Considerations
 
 1. **Medical Device Classification**: Determine if any aspects require FDA clearance or medical device regulation compliance
