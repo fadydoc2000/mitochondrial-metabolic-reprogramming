@@ -1802,3 +1802,50 @@ git commit -m "feat: implement GKI tracking system with biomarker integration ba
 - Adherence coaching effectiveness
 - De-identified research contribution to advancing metabolic therapy science
 - Accessibility to underserved populations
+---
+
+### Task 13b: Password reset flow (unplanned addition — 2026-07-21)
+
+**Status**: ✓ Complete
+
+Added self-serve forgot/reset password capability because users lost access to existing accounts with no recovery path.
+
+**Files modified:**
+- `backend/prisma/schema.prisma` — added `passwordResetToken String? @unique` and `passwordResetExpires DateTime?` to `User` model
+- `backend/src/routes/auth.ts` — added `POST /api/auth/forgot-password` (generates token, returns it directly — no email service yet) and `POST /api/auth/reset-password` (validates token, hashes new password, clears token)
+- `frontend/src/services/auth.ts` — added `forgotPassword(email)` and `resetPassword(token, password)` functions
+- `frontend/src/pages/AuthPage.tsx` — added `'forgot'` and `'reset'` modes; "Forgot password?" link on login form; URL param `?reset=<token>` parsed on mount; success message shows copyable reset link
+- `frontend/src/pages/AuthPage.css` — added `.auth-success` green alert styles
+
+**Note:** No email service configured. Reset token returned directly in API response; frontend displays the link for the user to copy. Future: wire SMTP/Resend when email infra is set up.
+
+- [x] Forgot-password API route with token generation
+- [x] Reset-password API route with expiry validation
+- [x] Frontend forgot/reset UI modes
+- [x] DB schema fields applied via `prisma db push`
+
+---
+
+### Task 13c: Animated metabolic pathway diagram (unplanned addition — 2026-07-21)
+
+**Status**: ✓ Complete
+
+Replaced static SVG diagrams on the landing page with animated side-by-side comparison showing the correct biochemical pathways for a healthy cell vs. a cell with damaged mitochondria.
+
+**Files created:**
+- `frontend/src/components/MitochondrialDiagram.tsx` — two animated SVG panels (SMIL `<animateMotion>` + CSS keyframes): `HealthyCell` shows glucose glycolysis → pyruvate (cytoplasm) → MPC crossing → PDC→Acetyl-CoA inside matrix + BHB ketolysis inside matrix → Krebs → ETC → OXPHOS → ATP; `DamagedCell` shows glucose-only glycolysis → pyruvate → LDH bypass arc through cytoplasm → Lactate + minimal ATP both outside the mitochondria oval (Warburg effect)
+- `frontend/src/components/MitochondrialDiagram.css` — layout grid, label styles, CSS animations (`hc-pulse-g`, `dc-lactate-pulse`, etc.), `prefers-reduced-motion` off-switch, mobile single-column below 760 px
+
+**Files modified:**
+- `frontend/src/pages/LandingPage.tsx` — removed old static SVG anatomy card; added `<MitochondrialDiagram />`
+
+**Biochemical accuracy:**
+- Acetyl-CoA produced inside the matrix only (PDC / ketolysis), not in cytoplasm
+- Pyruvate has its own cytoplasm node before membrane crossing (MPC)
+- Lactate produced by LDH in cytoplasm, not inside mitochondria
+- BHB ketolysis (SCOT/thiolase) correctly placed inside matrix
+
+- [x] Animated healthy cell pathway (OXPHOS)
+- [x] Animated damaged cell (Warburg/fermentation)
+- [x] Scientifically correct compartmentalisation
+- [x] CSS reduced-motion support

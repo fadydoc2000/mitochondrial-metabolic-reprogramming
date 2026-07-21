@@ -65,7 +65,7 @@ cd frontend && npm run build
 
 **Backend** (`backend/server.js`): Express with `helmet`, `cors`, and `express-rate-limit` wired. Entry point exports `app` so `supertest` can import without binding a port. Routes are TypeScript (transpiled at runtime via `ts-node` in dev; compile to `dist/` for production). PostgreSQL 15 via Docker + Prisma ORM. Redis 7 via Docker (package removed; deferred until caching is needed).
 
-**Frontend** (`frontend/src/`): React 18 + TypeScript + Vite. API calls via Axios (`frontend/src/services/api.ts`). Key pages: `BiomarkerDashboard`, `ProtocolGuidance`. Key components: `GKITracker`, `DeviceConnector`, `ProtocolPhase`, `MetricCard`.
+**Frontend** (`frontend/src/`): React 18 + TypeScript + Vite. API calls via Axios (`frontend/src/services/api.ts`). Key pages: `BiomarkerDashboard`, `ProtocolGuidance`, `AuthPage` (login/register/forgot/reset modes), `LandingPage`. Key components: `GKITracker`, `DeviceConnector`, `ProtocolPhase`, `MetricCard`, `MitochondrialDiagram` (animated SVG pathway comparison).
 
 **Implementation phases** (see plan Tasks 1-13): All 13 tasks complete across Phases 1–3 (Tasks 1–9: infra, schema, GKI tracker, device sync, protocol advisor; Tasks 10–13: safety screening, adherence coaching, provider collaboration, opt-in research). A professional public landing page (objective, Seyfried's findings, the mitochondrial view of metabolic disease) sits in front of authentication.
 
